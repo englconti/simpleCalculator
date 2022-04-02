@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #bebebe;
+
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#calculadora {
+  /*cor de fundo*/
+  background-color: #000000;
+
+  /*tamanho*/
+  width: 200px;
+  height: 300px;
+
+  /*ajuste de borda*/
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  /*sombreamento*/
+  box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+  -webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+}
+
+.tela {
+  /*cor de fundo*/
+  background-color: white;
+  /*tamanho do objeto*/
+  width: 170px;
+  height: 25px;
+  /*fonte do número digitado*/
+  font-size: 30px;
+  /*cor da letra*/
+  color: black;
+  /*alinhamento do texto*/
+  text-align: right;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
+
+  /*espaçamento entre a borda do valor digitado e a borda do campo tela*/
+  margin-left: 15px;
+  margin-top: 25px;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+}
+
+.botao {
+  margin: 15px;
+  padding: 10px;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns: repeat(3, 60px);
+  grid-template-rows: minmax(100px, auto) repeat(0, 100px);
+  position: relative;
+  cursor: pointer;
+}
+button {
+  background-color: darkred;
+  color: #ffff;
+  border-radius: 2px;
+  margin-right: 11px;
+  margin-left: 5px;
+  margin-top: 5px;
+  padding: 5px;
+}
