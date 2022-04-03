@@ -1,5 +1,19 @@
 "use strict";
 
+/* TO BE CONSTRUCTED:
+
+1) Function to validate length of final number (avoid something like 5864.21870317684716);
+
+2) Possibility to add negative numbers at the beginning;
+
+3) Separate script.js in different files using modulation (try something like Model-View-Controller architecture);
+
+4) Refactor some code into specific functions;
+
+5) Make code more clear;
+
+*/
+
 // Selecting screen
 const screen = document.querySelector("#screen");
 
@@ -30,10 +44,47 @@ const numberBtns = [one, two, three, four, five, six, seven, eight, nine, zero];
 let valueTyped = [];
 
 // Variable to keep the numbers from screen
-let screenShow;
+let screenShow = "";
 
 // Array to keep the values and operations in order
 let sequence = [];
+
+// Initial screen message
+screen.textContent = "hello :)";
+
+// Function to investigate code in console - only used during coding
+const logging = () => {
+  console.log("sequence: ", sequence);
+  console.log("valueTyped:", valueTyped);
+  console.log("screenShow: ", screenShow);
+};
+
+// Operation function
+const operation = function (arr) {
+  let res;
+  if (arr.length === 2) {
+    if (arr[1] == "+") {
+      res = arr[0] + Number(screenShow);
+    }
+    if (arr[1] == "-") {
+      res = arr[0] - Number(screenShow);
+    }
+    if (arr[1] == "*") {
+      res = arr[0] * Number(screenShow);
+    }
+    if (arr[1] == "/") {
+      res = arr[0] / Number(screenShow);
+    }
+    screenShow = res;
+    screen.textContent = screenShow;
+    valueTyped = [];
+    sequence = [];
+    sequence.push(screenShow);
+    screenShow = "";
+
+    // logging();
+  }
+};
 
 // NUMERAL BUTTONS -- OK
 numberBtns.map((number) =>
@@ -43,6 +94,8 @@ numberBtns.map((number) =>
       valueTyped.push(number.textContent);
       screenShow = valueTyped.join("");
       screen.textContent = screenShow;
+
+      // logging();
     }
   })
 );
@@ -71,49 +124,106 @@ clear.addEventListener("click", function () {
   screenShow = "";
   sequence = [];
   screen.textContent = screenShow;
+
+  // logging();
 });
 
 // PLUS & DIVISION & MULTIPLY BUTTONS
-[plus, division, multiply].map((operator) =>
+[plus, division, multiply, minus].map((operator) =>
   operator.addEventListener("click", function () {
-    // Checking if there is something typed != "."
-    if (
-      valueTyped[valueTyped.length - 1] > 0 ||
-      valueTyped[valueTyped.length - 1] < 0
-    ) {
-      sequence.push(Number(screenShow));
-      sequence.push(operator.textContent);
-      console.log(sequence);
-      valueTyped = [];
-      screenShow = "";
+    // Not considering first sequence element as +, -, * or /
+    if (valueTyped.length === 0 && sequence.length === 0) {
+      if (
+        operator.textContent === "*" ||
+        operator.textContent === "+" ||
+        operator.textContent === "/" ||
+        operator.textContent === "-"
+      )
+        return;
     }
-    // Replacing operator
-    if (typeof sequence[sequence.length - 1] == "string") {
-      sequence[sequence.length - 1] = operator.textContent;
-      console.log(sequence);
+
+    // Using operator buttons as "equal" to proceed to next operation
+    if (
+      sequence.length >= 2 &&
+      valueTyped.length !== 0 &&
+      screenShow != 0 &&
+      screenShow != "."
+    ) {
+      operation(sequence);
+      sequence.push(operator.textContent);
+      // console.log("Operation with operators");
+      // logging();
+    }
+    // If there is something on the sequence already
+    else if (sequence.length !== 0) {
+      // Replacing operator
+      if (
+        typeof sequence[sequence.length - 1] == "string" &&
+        screenShow === ""
+      ) {
+        sequence[sequence.length - 1] = operator.textContent;
+        // console.log("Replacing operators");
+        // console.log(sequence);
+      }
+      // Checking if there is only "."
+      else if (
+        typeof sequence[sequence.length - 1] == "string" &&
+        screenShow != 0 &&
+        screenShow != "."
+      ) {
+        sequence.push(Number(screenShow));
+        sequence.push(operator.textContent);
+        valueTyped = [];
+        screenShow = "";
+
+        // console.log("pushing number and operator");
+        // console.log(sequence);
+      }
+      // Adding values
+      else if (typeof sequence[sequence.length - 1] == "number") {
+        sequence.push(operator.textContent);
+        valueTyped = [];
+        screenShow = "";
+
+        // console.log("pushing operator only");
+        // console.log(sequence);
+      }
+    }
+
+    // Checking if sequence is empty
+    if (sequence.length === 0) {
+      // Add operator if there is nothing on screen
+      if (screenShow == "") {
+        sequence.push(operator.textContent);
+
+        console.log(sequence);
+      }
+      // Stop adding only "." or "0000...""
+      else if (screenShow != 0 && screenShow != ".") {
+        sequence.push(Number(screenShow));
+        sequence.push(operator.textContent);
+        valueTyped = [];
+        screenShow = "";
+
+        console.log("sequence: ", sequence);
+        console.log("valueTyped:", valueTyped);
+        console.log("screenShow: ", screenShow);
+      }
     }
   })
 );
 
-// MINUS BUTON
-minus.addEventListener("click", function () {
-  // Replacing operator
-  if (typeof sequence[sequence.length - 1] == "string") {
-    sequence[sequence.length - 1] = minus.textContent;
-    console.log(sequence);
-  } else if (sequence.length === 0) {
-    sequence.push(minus.textContent);
-    console.log(sequence);
-  } else {
-    sequence.push(Number(screenShow));
-    sequence.push(operator.textContent);
-    console.log(sequence);
-    valueTyped = [];
-    screenShow = "";
-  }
-});
-
 // EQUAL BUTTON
 equal.addEventListener("click", function () {
-  console.log(sequence);
+  operation(sequence);
 });
+
+// TESTING .toExponential()
+// const num = 12321431;
+// const numExp = num.toExponential(2);
+// console.log(num);
+// console.log("typeof num: ", typeof num);
+// console.log(numExp); // 1.23e+7
+// console.log("typeof numExp: ", typeof numExp);
+// console.log(numExp + 20);
+// console.log(+numExp + 20);
